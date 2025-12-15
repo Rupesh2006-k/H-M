@@ -1,12 +1,17 @@
 const express = require("express");
 const app = express();
 const port = 3000;
-
 const cookieParser = require("cookie-parser");
 let userRouter = require("./routes/user.route");
 let productRouter = require("./routes/product.route");
-
+let cors = require("cors");
 // Middlewares
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 

@@ -1,6 +1,7 @@
 let jwt = require("jsonwebtoken");
+const UserModel = require("../models/user.model");
 
-let authMiddleware = (req, res, next) => {
+let authMiddleware = async (req, res, next) => {
   try {
     // Cookie se token nikalo
     let token = req.cookies.token;
@@ -13,7 +14,8 @@ let authMiddleware = (req, res, next) => {
     let decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
 
     // Decoded data ko request me attach karo
-    req.user = decoded;
+    let currentUser = await UserModel.findById(decoded.id)
+    req.user = currentUser;
 
     // Aage chalo
     next();

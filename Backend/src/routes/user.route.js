@@ -1,16 +1,10 @@
 let express = require("express");
 let router = express.Router();
-let UserController = require('../controllers/user.controller');
-let authMiddleware = require('../middlewares/auth.middleware')
+let UserController = require("../controllers/user.controller");
+let authMiddleware = require("../middlewares/auth.middleware");
 router.post("/register", UserController.register);
 router.post("/login", UserController.login);
 router.post("/logout", UserController.logout);
-
-
-
-
-
-
-
+router.get("/current-user", authMiddleware, UserController.currentUser);
 
 module.exports = router;

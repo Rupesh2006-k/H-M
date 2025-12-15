@@ -38,7 +38,19 @@ let register = async (req, res) => {
     return res.status(500).send({ message: "Internal Server Error", error });
   }
 };
+const currentUser = (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized"
+    });
+  }
 
+  res.status(200).json({
+    success: true,
+    user: req.user
+  });
+};
 
 let login = async (req, res) => {
   try {
@@ -91,7 +103,6 @@ let login = async (req, res) => {
   }
 };
 
-
 let logout = async (req, res) => {
   try {
     res.clearCookie("token");
@@ -108,4 +119,4 @@ let logout = async (req, res) => {
 };
 
 
-module.exports = { register ,login, logout };
+module.exports = { register ,login, logout ,currentUser};

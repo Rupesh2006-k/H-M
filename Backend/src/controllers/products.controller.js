@@ -69,11 +69,10 @@ const createProduct = async (req, res) => {
 
 const findProduct = async (req, res) => {
   try {
-    const products = await ProductModel.find()
-
+    const products = await ProductModel.find();
 
     return res.status(200).json({
-      message:"all products are fetched",
+      message: "all products are fetched",
       products,
     });
   } catch (error) {
@@ -86,4 +85,107 @@ const findProduct = async (req, res) => {
   }
 };
 
-module.exports = { createProduct , findProduct };
+const findSingleProduct = async (req, res) => {
+  try {
+    let id = req.params.id;
+    const products = await ProductModel.findById(id);
+
+    return res.status(200).json({
+      message: "single products are fetched",
+      products,
+    });
+  } catch (error) {
+    console.error("Error in findProduct:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+const deleteProduct = async (req, res) => {
+  try {
+    let id = req.params.id;
+    const products = await ProductModel.findByIdAndDelete(id, { new: true });
+
+    return res.status(200).json({
+      message: "single products are deleted",
+      products,
+    });
+  } catch (error) {
+    console.error("Error in findProduct:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
+let updateProduct = async (req, res) => {
+  try {
+    let id = req.params.id;
+
+    if (!id) {
+      return res.status(404).json({
+        message: "Product ID not found",
+      });
+    }
+
+    // Extract body data
+    let { productName, description, price, category, sizes, images, colors } =
+      req.body;
+
+    // Validate required fields
+    if (
+      !productName ||
+      !description ||
+      !price ||
+      !category ||
+      !sizes ||
+      !images ||
+      !colors
+    ) {
+      return res.status(400).json({
+        message: "All fields are required",
+      });
+    }
+
+    // Update product
+    let updatedProduct = await ProductModel.findByIdAndUpdate(
+      id,
+      {
+        productName,
+        description,
+        price,
+        category,
+        sizes,
+        colors,
+        images,
+      },
+      { new: true } // return updated result
+    );
+
+    if (!updatedProduct) {
+      return res.status(400).json({
+        message: "Product not found or something went wrong",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Product updated successfully",
+      product: updatedProduct,
+    });
+  } catch (error) {
+    console.log("Error in update product", error);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+module.exports = {
+  createProduct,
+  findProduct,
+  findSingleProduct,
+  deleteProduct,
+  updateProduct,
+};
